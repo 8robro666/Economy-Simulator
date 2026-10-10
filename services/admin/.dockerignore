@@ -1,0 +1,12 @@
+node_modules
+public/build
+*.log
+.env
+config.json
+*.local
+.DS_Store
+.git
+.gitignore
+webpack.config.js
+tsconfig.json
+.svelte-kit

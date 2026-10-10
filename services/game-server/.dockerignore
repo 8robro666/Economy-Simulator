@@ -1,5 +1,12 @@
 node_modules
-config.json
 dist
-rccservice
-*.tar
+*.log
+.env
+config.json
+*.local
+.DS_Store
+.git
+.gitignore
+docker
+tests
+*.sh

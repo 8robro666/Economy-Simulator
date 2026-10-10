@@ -1,0 +1,16 @@
+*.log
+.env
+*.local
+.DS_Store
+.git
+.gitignore
+*.dll
+*.exe
+*.pdb
+*.xml
+shaders
+content
+PlatformContent
+gameserver.txt
+.dockerignore
+Dockerfile

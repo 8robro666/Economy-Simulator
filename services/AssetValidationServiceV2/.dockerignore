@@ -1,0 +1,11 @@
+*.log
+.env
+config.json
+*.local
+.DS_Store
+.git
+.gitignore
+*.service
+install.sh
+*.iml
+.idea

@@ -1,0 +1,16 @@
+node_modules
+.next
+*.log
+.env
+config.json
+*.local
+.DS_Store
+.git
+.gitignore
+*.md
+docs
+test
+jest.config.js
+babel.config-test.js
+setupTests.js
+ecosystem.config.js

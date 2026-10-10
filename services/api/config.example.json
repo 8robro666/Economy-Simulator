@@ -1,0 +1,54 @@
+{
+  "knex": {
+    "client": "pg",
+    "connection": {
+      "host": "postgres.railway.internal",
+      "user": "postgres",
+      "password": "${DATABASE_PASSWORD}",
+      "database": "railway",
+      "port": 5432
+    },
+    "pool": {
+      "min": 2,
+      "max": 10
+    }
+  },
+  "redis": {
+    "host": "redis.railway.internal",
+    "port": 6379,
+    "password": "${REDIS_PASSWORD}"
+  },
+  "session": {
+    "secret": "${SESSION_SECRET}",
+    "cookie": {
+      "secure": true,
+      "httpOnly": true,
+      "maxAge": 86400000
+    }
+  },
+  "jwt": {
+    "secret": "${JWT_SECRET}",
+    "expiresIn": "7d"
+  },
+  "authorization": "${WEBSITE_AUTH}",
+  "baseUrl": "${BASE_URL}",
+  "port": 3000,
+  "assetValidation": {
+    "url": "http://asset-validation:4300",
+    "authorization": "${ASSET_VALIDATION_AUTH}"
+  },
+  "render": {
+    "url": "ws://game-server:3040",
+    "authorization": "${GAME_SERVER_AUTH}"
+  },
+  "gameServer": {
+    "authorization": "${GAME_SERVER_AUTH}"
+  },
+  "hcaptcha": {
+    "public": "${HCAPTCHA_PUBLIC}",
+    "private": "${HCAPTCHA_PRIVATE}"
+  },
+  "ownerUserIds": [1],
+  "botAuthorization": "${WEBSITE_BOT_AUTH}",
+  "rccAuthorization": "${RCC_AUTH}"
+}

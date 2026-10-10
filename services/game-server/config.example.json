@@ -1,0 +1,11 @@
+{
+  "authorization": "${GAME_SERVER_AUTH}",
+  "baseUrl": "${BASE_URL}",
+  "rccPort": 3189,
+  "port": 3000,
+  "thumbnailWebsocketPort": 3040,
+  "websiteBotAuth": "${WEBSITE_BOT_AUTH}",
+  "rcc": "http://rcc-service:3189",
+  "content": "/usr/src/app/RCCService/content",
+  "dockerDisabled": false
+}

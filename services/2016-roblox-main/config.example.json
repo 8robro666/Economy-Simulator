@@ -13,8 +13,8 @@
         "catalogDetailsPageResellerLimit": 10,
         "avatarPageInventoryLimit": 10
       },
-      "baseUrl": "https://www.roblox.com",
-      "apiFormat": "https://{0}.roblox.com{1}"
+      "baseUrl": "${BASE_URL}",
+      "apiFormat": "${BASE_URL}/apisite/{0}{1}"
     }
   }
 }

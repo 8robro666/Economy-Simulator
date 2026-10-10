@@ -1,0 +1,81 @@
+# Dependencies
+**/node_modules
+**/bin
+**/obj
+
+# Build outputs
+**/dist
+**/build
+**/.next
+**/public/build
+
+# Environment & Config
+**/.env
+**/*.env
+**/config.json
+**/appsettings.json
+**/appsettings.*.json
+
+# Logs
+**/*.log
+**/npm-debug.log*
+
+# IDE
+**/.idea
+**/.vs
+**/.vscode
+**/*.swp
+**/*.swo
+
+# OS
+**/.DS_Store
+**/Thumbs.db
+
+# Git
+**/.git
+**/.gitignore
+**/.gitattributes
+
+# Docker
+**/Dockerfile
+**/.dockerignore
+**/docker-compose*.yml
+
+# Railway
+railway.toml
+DEPLOY.md
+
+# Documentation
+**/*.md
+**/*.txt
+**/docs
+
+# Test
+**/test
+**/tests
+**/__tests__
+**/*.test.ts
+**/*.test.js
+**/*.spec.ts
+**/*.spec.js
+
+# RCC Service Windows binaries
+services/RCCService/*.dll
+services/RCCService/*.exe
+services/RCCService/*.xml
+services/RCCService/content
+services/RCCService/PlatformContent
+services/RCCService/shaders
+services/RCCService/gameserver.txt
+
+# .NET
+**/*.csproj
+**/*.sln
+**/packages
+**/nuget
+
+# Go
+**/go.sum
+**/go.mod
+**/*.service
+**/install.sh

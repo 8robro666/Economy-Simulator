@@ -1,0 +1,129 @@
+[build]
+builder = "docker"
+
+[deploy]
+healthcheckPath = "/"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+[[services]]
+name = "api"
+dockerfilePath = "services/api/Dockerfile"
+[services.api.env]
+NODE_ENV = "production"
+PORT = "3000"
+DATABASE_URL = "${{DATABASE_URL}}"
+REDIS_URL = "${{REDIS_URL}}"
+JWT_SECRET = "${{JWT_SECRET}}"
+SESSION_SECRET = "${{SESSION_SECRET}}"
+[services.api.healthcheck]
+path = "/health"
+interval = 30
+timeout = 10
+
+[[services]]
+name = "game-server"
+dockerfilePath = "services/game-server/Dockerfile"
+[services.game-server.env]
+NODE_ENV = "production"
+PORT = "3000"
+THUMBNAIL_WEBSOCKET_PORT = "3040"
+AUTHORIZATION = "${{GAME_SERVER_AUTH}}"
+BASE_URL = "${{BASE_URL}}"
+WEBSITE_BOT_AUTH = "${{WEBSITE_BOT_AUTH}}"
+RCC_PORT = "3189"
+[services.game-server.healthcheck]
+path = "/health"
+interval = 30
+timeout = 10
+
+[[services]]
+name = "admin"
+dockerfilePath = "services/admin/Dockerfile"
+[services.admin.env]
+NODE_ENV = "production"
+PORT = "80"
+[services.admin.healthcheck]
+path = "/"
+interval = 30
+timeout = 10
+
+[[services]]
+name = "asset-validation"
+dockerfilePath = "services/AssetValidationServiceV2/Dockerfile"
+[services.asset-validation.env]
+PORT = "4300"
+AUTHORIZATION = "${{ASSET_VALIDATION_AUTH}}"
+[services.asset-validation.healthcheck]
+path = "/"
+interval = 30
+timeout = 10
+
+[[services]]
+name = "website"
+dockerfilePath = "services/Roblox/Roblox.Website/Dockerfile"
+[services.website.env]
+ASPNETCORE_ENVIRONMENT = "Production"
+ASPNETCORE_URLS = "http://+:80"
+POSTGRES = "${{DATABASE_URL}}"
+REDIS = "${{REDIS_HOST}}:6379"
+AUTHORIZATION = "${{WEBSITE_AUTH}}"
+BASE_URL = "${{BASE_URL}}"
+ASSET_VALIDATION_URL = "http://asset-validation:4300"
+ASSET_VALIDATION_AUTH = "${{ASSET_VALIDATION_AUTH}}"
+RENDER_URL = "ws://game-server:3040"
+RENDER_AUTH = "${{GAME_SERVER_AUTH}}"
+GAME_SERVER_AUTH = "${{GAME_SERVER_AUTH}}"
+OWNER_USER_ID = "${{OWNER_USER_ID}}"
+HCAPTCHA_PUBLIC = "${{HCAPTCHA_PUBLIC}}"
+HCAPTCHA_PRIVATE = "${{HCAPTCHA_PRIVATE}}"
+JWT_SESSIONS = "${{JWT_SECRET}}"
+BOT_AUTHORIZATION = "${{WEBSITE_BOT_AUTH}}"
+RCC_AUTHORIZATION = "${{RCC_AUTH}}"
+[services.website.healthcheck]
+path = "/health"
+interval = 30
+timeout = 10
+
+[[services]]
+name = "rcc-service"
+dockerfilePath = "services/RCCService/Dockerfile"
+[services.rcc-service.env]
+DISPLAY = ":99"
+[services.rcc-service.healthcheck]
+path = "/health"
+interval = 60
+timeout = 30
+
+[[services]]
+name = "frontend"
+dockerfilePath = "services/2016-roblox-main/Dockerfile"
+[services.frontend.env]
+NODE_ENV = "production"
+NEXT_PUBLIC_API_URL = "${{BASE_URL}}"
+PORT = "3000"
+[services.frontend.healthcheck]
+path = "/"
+interval = 30
+timeout = 10
+
+[databases]
+postgresql = { name = "postgres", plan = "starter" }
+redis = { name = "redis", plan = "starter" }
+
+[variables]
+DATABASE_URL = "postgresql://postgres:password@postgres.railway.internal:5432/railway"
+REDIS_URL = "redis://default:password@redis.railway.internal:6379"
+REDIS_HOST = "redis.railway.internal"
+JWT_SECRET = "generate-a-secure-random-string-here"
+SESSION_SECRET = "generate-another-secure-random-string-here"
+GAME_SERVER_AUTH = "generate-a-secure-random-string-here"
+WEBSITE_AUTH = "generate-a-secure-random-string-here"
+WEBSITE_BOT_AUTH = "generate-a-secure-random-string-here"
+ASSET_VALIDATION_AUTH = "generate-a-secure-random-string-here"
+RCC_AUTH = "generate-a-secure-random-string-here"
+BASE_URL = "https://your-app.railway.app"
+OWNER_USER_ID = "1"
+HCAPTCHA_PUBLIC = "10000000-ffff-ffff-ffff-000000000001"
+HCAPTCHA_PRIVATE = "0x0000000000000000000000000000000000000000"

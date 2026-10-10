@@ -1,0 +1,167 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: railway
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/railway
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: dev-jwt-secret-change-in-production
+      SESSION_SECRET: dev-session-secret-change-in-production
+      WEBSITE_AUTH: dev-website-auth
+      GAME_SERVER_AUTH: dev-game-server-auth
+      ASSET_VALIDATION_AUTH: dev-asset-validation-auth
+      WEBSITE_BOT_AUTH: dev-bot-auth
+      RCC_AUTH: dev-rcc-auth
+      BASE_URL: http://localhost:3000
+      HCAPTCHA_PUBLIC: 10000000-ffff-ffff-ffff-000000000001
+      HCAPTCHA_PRIVATE: 0x0000000000000000000000000000000000000000
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/api/config.json:/app/config.json:ro
+
+  game-server:
+    build:
+      context: .
+      dockerfile: services/game-server/Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      THUMBNAIL_WEBSOCKET_PORT: 3040
+      AUTHORIZATION: dev-game-server-auth
+      BASE_URL: http://localhost:3000
+      WEBSITE_BOT_AUTH: dev-bot-auth
+      RCC_PORT: 3189
+    ports:
+      - "3001:3000"
+      - "3040:3040"
+    depends_on:
+      - api
+    volumes:
+      - ./services/game-server/config.json:/app/config.json:ro
+
+  admin:
+    build:
+      context: .
+      dockerfile: services/admin/Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+  asset-validation:
+    build:
+      context: .
+      dockerfile: services/AssetValidationServiceV2/Dockerfile
+    environment:
+      PORT: 4300
+      AUTHORIZATION: dev-asset-validation-auth
+    ports:
+      - "4300:4300"
+
+  website:
+    build:
+      context: .
+      dockerfile: services/Roblox/Roblox.Website/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:80
+      POSTGRES: postgresql://postgres:postgres@postgres:5432/railway
+      REDIS: redis:6379
+      AUTHORIZATION: dev-website-auth
+      BASE_URL: http://localhost:3000
+      ASSET_VALIDATION_URL: http://asset-validation:4300
+      ASSET_VALIDATION_AUTH: dev-asset-validation-auth
+      RENDER_URL: ws://game-server:3040
+      RENDER_AUTH: dev-game-server-auth
+      GAME_SERVER_AUTH: dev-game-server-auth
+      OWNER_USER_ID: 1
+      HCAPTCHA_PUBLIC: 10000000-ffff-ffff-ffff-000000000001
+      HCAPTCHA_PRIVATE: 0x0000000000000000000000000000000000000000
+      JWT_SESSIONS: dev-jwt-secret-change-in-production
+      BOT_AUTHORIZATION: dev-bot-auth
+      RCC_AUTHORIZATION: dev-rcc-auth
+    ports:
+      - "5000:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      asset-validation:
+        condition: service_started
+      game-server:
+        condition: service_started
+
+  rcc-service:
+    build:
+      context: .
+      dockerfile: services/RCCService/Dockerfile
+    environment:
+      DISPLAY: ":99"
+    ports:
+      - "3189:3189"
+    depends_on:
+      - game-server
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  frontend:
+    build:
+      context: .
+      dockerfile: services/2016-roblox-main/Dockerfile
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+      PORT: 3000
+    ports:
+      - "3002:3000"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
+  redis_data:
