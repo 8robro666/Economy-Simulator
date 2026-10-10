@@ -10,6 +10,12 @@ COPY . .
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
+ARG BASE_URL
+ENV BASE_URL=$BASE_URL
+
+RUN apk add --no-cache gettext
+RUN envsubst < config.example.json > config.json
+
 RUN npm run build
 
 FROM node:18-alpine AS runner
